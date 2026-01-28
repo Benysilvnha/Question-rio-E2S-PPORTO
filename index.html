@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Questionário Interativo ESS P.PORTO</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #f0f8ff, #e6f2ff);
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    text-align: center;
+    color: #004080;
+  }
+
+  /* Container das logos */
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo-container img {
+    max-width: 180px;
+    height: auto;
+  }
+
+  .question {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 6px solid #004080;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  button {
+    padding: 12px;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    transform: scale(1.02);
+  }
+
+  .btn-blue { background-color: #1E90FF; color: #fff; }
+  .btn-green { background-color: #28a745; color: #fff; }
+  .btn-orange { background-color: #ff9900; color: #fff; }
+
+  #result {
+    text-align: center;
+    margin-top: 30px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 6px solid #28a745;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+
+  #result h2 {
+    color: #004080;
+  }
+
+  #result p {
+    font-size: 16px;
+    color: #333;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-container">
+  <img src="logo-ess.png" alt="Logo ESS P.PORTO">
+  <img src="logo-ae.png" alt="Logo Associação de Estudantes">
+</div>
+
+<h1>Orientação de Curso – ESS P.PORTO</h1>
+
+<div id="quiz"></div>
+<div id="result"></div>
+
+<script>
+// Cursos, pontuação e descrições
+let scores = {
+  Audiologia:0, BiotecnologiaMedicinal:0, CienciasBiomedicas:0,
+  Farmacia:0, FisiologiaClinica:0, Fisioterapia:0,
+  ImagemMedicaRadioterapia:0, Ortopica:0, Osteopatia:0,
+  SaudeAmbiental:0, SaudeDigital:0, TerapiaFala:0, TerapiaOcupacional:0
+};
+
+const descriptions = {
+  Audiologia: "Foca-se na avaliação, prevenção e reabilitação de problemas auditivos e de equilíbrio. Os profissionais podem trabalhar em rastreios, adaptação de próteses auditivas e programas de prevenção.",
+  BiotecnologiaMedicinal: "Combina biotecnologia e química medicinal para desenvolver terapias avançadas, incluindo medicina regenerativa. Prepara para laboratórios de investigação, indústria farmacêutica e biotecnológica.",
+  CienciasBiomedicas: "Formação para laboratórios de diagnóstico, investigação e saúde pública, com competências em análises clínicas, microbiologia e técnicas laboratoriais.",
+  Farmacia: "Formação em medicamentos, produtos de saúde e cuidado farmacêutico. Prepara para funções clínicas, comunitárias, industriais e de investigação farmacêutica.",
+  FisiologiaClinica: "Avaliação funcional dos sistemas corporais, permitindo trabalhar em diagnóstico funcional e monitorização do paciente em hospitais e clínicas.",
+  Fisioterapia: "Reabilitação, prevenção e promoção de movimento e funcionalidade humana. Atua na recuperação física de lesões, doenças músculo-esqueléticas e neurológicas.",
+  ImagemMedicaRadioterapia: "Técnicas de imagem e radiação para diagnóstico e tratamento. Trabalha com raio-X, TAC, ressonância e radioterapia em oncologia e áreas clínicas.",
+  Ortopica: "Avaliação, diagnóstico e reabilitação de disfunções visuais e binocularidade. Trabalha em equipas de oftalmologia, clínicas visuais e instituições de reabilitação visual.",
+  Osteopatia: "Abordagem manual para melhorar a função músculo-esquelética e articulações. Pode atuar em práticas privadas e centros de saúde complementares.",
+  SaudeAmbiental: "Avaliação e controlo de fatores ambientais que afetam a saúde humana, incluindo água, ar e solo. Atua em saúde pública, consultoria ambiental e prevenção de riscos.",
+  SaudeDigital: "Combina tecnologias digitais com cuidados de saúde e reabilitação. Trabalha com sistemas de informação em saúde, telemedicina e gestão de dados clínicos.",
+  TerapiaFala: "Intervenção em comunicação, linguagem, fala e deglutição. Atua com crianças e adultos com dificuldades de comunicação e alimentação.",
+  TerapiaOcupacional: "Ajuda pessoas a participarem em atividades significativas do dia-a-dia, promovendo autonomia e qualidade de vida em contextos clínicos, comunitários ou educativos."
+};
+
+// Perguntas do questionário
+const questions = [
+  {
+    text: "Gostas de atividades que impliquem laboratório e manipulação de materiais biológicos ou químicos?",
+    options: [
+      {text: "Adoro", points: {BiotecnologiaMedicinal:3, CienciasBiomedicas:3, Farmacia:2}, color:"btn-blue"},
+      {text: "Mais ou menos", points: {ImagemMedicaRadioterapia:1, SaudeDigital:1}, color:"btn-green"},
+      {text: "Não", points: {Fisioterapia:1, TerapiaFala:1, Ortopica:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Preferes trabalhar com equipamentos complexos de diagnóstico e imagem (ex.: raio‑X, TAC)?",
+    options: [
+      {text: "Sim, muito", points: {ImagemMedicaRadioterapia:3, FisiologiaClinica:2}, color:"btn-blue"},
+      {text: "Um pouco", points: {SaudeDigital:2}, color:"btn-green"},
+      {text: "Não", points: {TerapiaOcupacional:1, Audiologia:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Queres trabalhar sobretudo com cuidados diretos e reabilitação de pessoas?",
+    options: [
+      {text: "Sim, adoro!", points: {Fisioterapia:3, TerapiaOcupacional:3, TerapiaFala:3}, color:"btn-blue"},
+      {text: "Mais ou menos", points: {Ortopica:2, Audiologia:2}, color:"btn-green"},
+      {text: "Não", points: {SaudeAmbiental:1, BiotecnologiaMedicinal:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Ficas motivado por prevenção da doença e campanhas de saúde pública?",
+    options: [
+      {text: "Sim", points: {SaudeAmbiental:3, Audiologia:2, CienciasBiomedicas:1}, color:"btn-blue"},
+      {text: "Mais ou menos", points: {Farmacia:1, SaudeDigital:1}, color:"btn-green"},
+      {text: "Não", points: {Fisioterapia:1, Osteopatia:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Interessa-te trabalhar com comunicação, linguagem ou problemas de deglutição?",
+    options: [
+      {text: "Sim", points: {TerapiaFala:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {Audiologia:2}, color:"btn-green"},
+      {text: "Não", points: {FisiologiaClinica:1, SaudeDigital:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Queres desenvolver ou trabalhar com tecnologia e dados aplicados à saúde?",
+    options: [
+      {text: "Sim", points: {SaudeDigital:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {ImagemMedicaRadioterapia:1, BiotecnologiaMedicinal:1}, color:"btn-green"},
+      {text: "Não", points: {TerapiaOcupacional:1, Osteopatia:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Preferes um curso com forte componente de ciências básicas (biologia/química)?",
+    options: [
+      {text: "Sim", points: {Farmacia:3, BiotecnologiaMedicinal:3, CienciasBiomedicas:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {FisiologiaClinica:2}, color:"btn-green"},
+      {text: "Não", points: {Fisioterapia:1, SaudeDigital:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Queres trabalhar com funções fisiológicas do corpo humano e avaliações clínicas?",
+    options: [
+      {text: "Sim", points: {FisiologiaClinica:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {ImagemMedicaRadioterapia:2}, color:"btn-green"},
+      {text: "Não", points: {TerapiaFala:1, Ortopica:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Te agrada trabalhar com visão e dispositivos oftálmicos?",
+    options: [
+      {text: "Sim", points: {Ortopica:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {Audiologia:2}, color:"btn-green"},
+      {text: "Não", points: {Fisioterapia:1, Osteopatia:1}, color:"btn-orange"}
+    ]
+  },
+  {
+    text: "Queres depois do curso poder trabalhar na indústria farmacêutica ou biotecnológica?",
+    options: [
+      {text: "Sim", points: {Farmacia:3, BiotecnologiaMedicinal:3}, color:"btn-blue"},
+      {text: "Um pouco", points: {CienciasBiomedicas:2, SaudeDigital:1}, color:"btn-green"},
+      {text: "Não", points: {Fisioterapia:1, TerapiaOcupacional:1}, color:"btn-orange"}
+    ]
+  }
+];
+
+let currentQuestion = 0;
+
+function showQuestion() {
+  if(currentQuestion >= questions.length) {
+    showResult();
+    return;
+  }
+  const q = questions[currentQuestion];
+  const container = document.getElementById("quiz");
+  container.innerHTML = `<div class="question"><strong>${q.text}</strong></div>`;
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt.text;
+    btn.className = opt.color;
+    btn.onclick = () => {
+      for(let course in opt.points) {
+        scores[course] += opt.points[course] || 0;
+      }
+      currentQuestion++;
+      showQuestion();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topCourse = sorted[0][0];
+  document.getElementById("result").innerHTML = 
+    `<h2>Curso sugerido para ti:</h2>
+     <p style="font-size:20px; color:#1E90FF;"><strong>${topCourse}</strong></p>
+     <p>${descriptions[topCourse]}</p>`;
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>
