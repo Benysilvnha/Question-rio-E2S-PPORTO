@@ -3,145 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Questionário Interativo ESS P.PORTO</title>
+<title>Descobre o Teu Futuro - ESS P.PORTO</title>
 <style>
   :root {
-    --primary-color: #004080;
-    --accent-color: #1E90FF;
-    --bg-gradient: linear-gradient(to bottom, #f0f8ff, #e6f2ff);
+    --primary-color: #004080; /* Azul Porto */
+    --accent-color: #e4002b;  /* Vermelho P.Porto (Opcional, ou manter azul claro #1E90FF) */
+    --accent-light: #1E90FF;
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   }
 
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
     background: var(--bg-gradient);
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    color: #333;
+    color: #444;
+    min-height: 100vh;
   }
 
   h1 {
     text-align: center;
     color: var(--primary-color);
     margin-bottom: 10px;
+    font-weight: 700;
   }
 
-  /* Container das logos */
+  .subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+
+  /* Logos */
   .logo-container {
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 30px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
+    margin-bottom: 20px;
   }
-
   .logo-container img {
-    max-width: 150px;
-    height: auto;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    height: 60px; /* Ajuste conforme necessário */
+    width: auto;
   }
 
   /* Barra de Progresso */
-  .progress-container {
+  .progress-wrapper {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    height: 12px;
     width: 100%;
-    background-color: #ddd;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    height: 10px;
+    margin-bottom: 30px;
     overflow: hidden;
   }
 
   .progress-bar {
+    background-color: var(--accent-light);
     height: 100%;
-    background-color: var(--accent-color);
     width: 0%;
-    transition: width 0.4s ease;
+    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 20px;
   }
 
-  /* Cartão Principal */
+  /* Cartão */
   .card {
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    animation: fadeIn 0.5s ease;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: slideUp 0.5s ease;
   }
 
   .question-text {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 600;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     color: var(--primary-color);
+    line-height: 1.4;
   }
 
   /* Botões */
   .options-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 15px;
   }
 
   button {
-    padding: 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
+    padding: 18px 25px;
+    font-size: 1.05rem;
+    border: 2px solid transparent;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
     text-align: left;
-    position: relative;
-    overflow: hidden;
+    background-color: #f8f9fa;
+    color: #333;
+    border-color: #e9ecef;
   }
 
   button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: var(--accent-light);
+    background-color: white;
+    color: var(--accent-light);
   }
 
-  .btn-blue { background-color: #1E90FF; color: #fff; }
-  .btn-green { background-color: #28a745; color: #fff; }
-  .btn-orange { background-color: #ff9900; color: #fff; }
-  .btn-reset { 
-    background-color: var(--primary-color); 
-    color: white; 
-    text-align: center; 
-    margin-top: 20px;
+  button:active {
+    transform: scale(0.98);
   }
 
   /* Resultados */
+  .result-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
   .result-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    border-left: 5px solid #ccc;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    transition: transform 0.2s;
+    border-left: 6px solid #ccc;
+  }
+
+  .result-item:hover {
+    transform: translateX(5px);
   }
 
   .result-item.winner {
     border-left-color: #28a745;
-    background-color: #e8f5e9;
+    background-color: #f0fff4;
+    border-color: #c3e6cb;
   }
 
-  .course-name {
-    font-size: 1.1rem;
+  .result-item.runner-up {
+    border-left-color: var(--accent-light);
+  }
+
+  .course-title {
+    font-size: 1.2rem;
     font-weight: bold;
     color: var(--primary-color);
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
-  .course-desc {
-    font-size: 0.95rem;
-    margin-top: 8px;
+  .match-badge {
+    font-size: 0.8rem;
+    background: #eee;
+    padding: 4px 8px;
+    border-radius: 12px;
     color: #555;
-    line-height: 1.4;
   }
 
-  /* Animações */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+  .btn-reset {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    margin-top: 25px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .btn-reset:hover {
+    background-color: #003366;
+    color: white;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -151,246 +188,7 @@
 <body>
 
 <div class="logo-container">
-  <img src="logo-ess.png" alt="Logo ESS P.PORTO" onerror="this.style.display='none'">
-  <img src="logo-ae.png" alt="Logo AE" onerror="this.style.display='none'">
+  <img src="https://www.ess.ipp.pt/logo-ess.png" alt="ESS P.PORTO" onerror="this.style.display='none'"> 
 </div>
 
-<h1>Orientação de Curso – ESS P.PORTO</h1>
-
-<div class="progress-container">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<div id="quiz-container" class="card">
-  </div>
-
-<div id="result-container" class="card hidden">
-  <h2 style="text-align:center; color: var(--primary-color);">O teu Perfil Sugere:</h2>
-  <div id="results-list"></div>
-  <button class="btn-reset" onclick="restartQuiz()">Fazer o teste novamente</button>
-</div>
-
-<script>
-// Mapeamento para nomes bonitos (com acentos e espaços)
-const courseNames = {
-  Audiologia: "Audiologia",
-  BiotecnologiaMedicinal: "Biotecnologia Medicinal",
-  CienciasBiomedicas: "Ciências Biomédicas",
-  Farmacia: "Farmácia",
-  FisiologiaClinica: "Fisiologia Clínica",
-  Fisioterapia: "Fisioterapia",
-  ImagemMedicaRadioterapia: "Imagem Médica e Radioterapia",
-  Ortopica: "Ortóptica",
-  Osteopatia: "Osteopatia",
-  SaudeAmbiental: "Saúde Ambiental",
-  SaudeDigital: "Saúde Digital",
-  TerapiaFala: "Terapia da Fala",
-  TerapiaOcupacional: "Terapia Ocupacional"
-};
-
-const descriptions = {
-  Audiologia: "Foca-se na avaliação e reabilitação auditiva e do equilíbrio. Ideal para quem gosta de tecnologia aplicada aos sentidos.",
-  BiotecnologiaMedicinal: "Combina biologia e química para criar novas terapias. Perfeito para quem ama laboratório e investigação.",
-  CienciasBiomedicas: "O detetive do laboratório. Foca no diagnóstico de doenças através de análises clínicas e microbiologia.",
-  Farmacia: "Especialista no medicamento. Desde a investigação industrial até ao aconselhamento comunitário na farmácia.",
-  FisiologiaClinica: "Trabalha diretamente no hospital a fazer exames de diagnóstico ao coração, pulmões e cérebro.",
-  Fisioterapia: "Reabilitação do movimento humano. Para quem quer ter contacto físico direto e ajudar na recuperação de lesões.",
-  ImagemMedicaRadioterapia: "Usa tecnologia de ponta (Raio-X, TAC, Ressonância) para ver o interior do corpo e tratar doenças oncológicas.",
-  Ortopica: "Especialista na visão binocular. Diagnostica e trata estrabismos e problemas visuais.",
-  Osteopatia: "Terapia manual holística que trata a pessoa como um todo, focando na estrutura do corpo e articulações.",
-  SaudeAmbiental: "Protege a saúde humana controlando o ambiente (água, ar, alimentos). É a saúde pública em ação.",
-  SaudeDigital: "A ponte entre a informática e a saúde. Gere dados clínicos e desenvolve novas tecnologias para a medicina.",
-  TerapiaFala: "Trata problemas de comunicação, voz e deglutição em crianças e adultos.",
-  TerapiaOcupacional: "Promove a autonomia. Ajuda pessoas com limitações a realizarem as atividades do dia-a-dia."
-};
-
-const questions = [
-  {
-    text: "1. Gostas de atividades que impliquem laboratório e manipulação de materiais biológicos ou químicos?",
-    options: [
-      {text: "Adoro, é a minha praia!", points: {BiotecnologiaMedicinal:3, CienciasBiomedicas:3, Farmacia:2}, color:"btn-blue"},
-      {text: "Gosto mais ou menos", points: {ImagemMedicaRadioterapia:1, SaudeDigital:1}, color:"btn-green"},
-      {text: "Não, prefiro lidar com pessoas", points: {Fisioterapia:1, TerapiaFala:1, Ortopica:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "2. Preferes trabalhar com equipamentos complexos de diagnóstico e imagem (ex.: raio‑X, TAC)?",
-    options: [
-      {text: "Sim, fascina-me a tecnologia", points: {ImagemMedicaRadioterapia:3, FisiologiaClinica:2}, color:"btn-blue"},
-      {text: "Um pouco", points: {SaudeDigital:2}, color:"btn-green"},
-      {text: "Não, prefiro terapia manual", points: {TerapiaOcupacional:1, Audiologia:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "3. Queres trabalhar sobretudo com cuidados diretos e reabilitação física/motora?",
-    options: [
-      {text: "Sim, quero contacto direto", points: {Fisioterapia:3, TerapiaOcupacional:3, TerapiaFala:3}, color:"btn-blue"},
-      {text: "Talvez", points: {Ortopica:2, Audiologia:2}, color:"btn-green"},
-      {text: "Não, prefiro bastidores/análise", points: {SaudeAmbiental:1, BiotecnologiaMedicinal:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "4. Ficas motivado por prevenção da doença e campanhas de saúde pública?",
-    options: [
-      {text: "Sim, prevenir é o melhor remédio", points: {SaudeAmbiental:3, Audiologia:2, CienciasBiomedicas:1}, color:"btn-blue"},
-      {text: "Indiferente", points: {Farmacia:1, SaudeDigital:1}, color:"btn-green"},
-      {text: "Não, prefiro tratar a doença", points: {Fisioterapia:1, Osteopatia:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "5. Interessa-te a área da comunicação, linguagem ou voz?",
-    options: [
-      {text: "Sim, muito", points: {TerapiaFala:3}, color:"btn-blue"},
-      {text: "Um pouco (audição)", points: {Audiologia:2}, color:"btn-green"},
-      {text: "Nada", points: {FisiologiaClinica:1, SaudeDigital:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "6. Tens interesse por informática, dados e tecnologia?",
-    options: [
-      {text: "Sim, sou 'techy'", points: {SaudeDigital:3}, color:"btn-blue"},
-      {text: "Desde que aplicada à saúde", points: {ImagemMedicaRadioterapia:1, BiotecnologiaMedicinal:1}, color:"btn-green"},
-      {text: "Não, fujo dos computadores", points: {TerapiaOcupacional:1, Osteopatia:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "7. Tens facilidade em Biologia e Química pura?",
-    options: [
-      {text: "Sim, são as minhas favoritas", points: {Farmacia:3, BiotecnologiaMedicinal:3, CienciasBiomedicas:3}, color:"btn-blue"},
-      {text: "Mais ou menos", points: {FisiologiaClinica:2}, color:"btn-green"},
-      {text: "Prefiro Anatomia/Física", points: {Fisioterapia:1, SaudeDigital:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "8. Queres trabalhar com o diagnóstico funcional (coração, pulmões, cérebro)?",
-    options: [
-      {text: "Sim", points: {FisiologiaClinica:3}, color:"btn-blue"},
-      {text: "Talvez através de imagem", points: {ImagemMedicaRadioterapia:2}, color:"btn-green"},
-      {text: "Não", points: {TerapiaFala:1, Ortopica:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "9. Gostarias de trabalhar especificamente com a Visão?",
-    options: [
-      {text: "Sim, olhos e visão", points: {Ortopica:3}, color:"btn-blue"},
-      {text: "Talvez audição", points: {Audiologia:2}, color:"btn-green"},
-      {text: "Não", points: {Fisioterapia:1, Osteopatia:1}, color:"btn-orange"}
-    ]
-  },
-  {
-    text: "10. Imaginas-te a trabalhar numa grande indústria farmacêutica?",
-    options: [
-      {text: "Sim, seria um sonho", points: {Farmacia:3, BiotecnologiaMedicinal:3}, color:"btn-blue"},
-      {text: "Talvez em laboratório", points: {CienciasBiomedicas:2, SaudeDigital:1}, color:"btn-green"},
-      {text: "Não, quero clínica/hospital", points: {Fisioterapia:1, TerapiaOcupacional:1}, color:"btn-orange"}
-    ]
-  }
-];
-
-// Estado Inicial
-let scores = {};
-let currentQuestion = 0;
-
-function initScores() {
-  // Reinicia os scores a 0 baseando-se nas chaves do objeto courseNames
-  Object.keys(courseNames).forEach(key => scores[key] = 0);
-}
-
-function updateProgressBar() {
-  const percent = ((currentQuestion) / questions.length) * 100;
-  document.getElementById("progressBar").style.width = `${percent}%`;
-}
-
-function showQuestion() {
-  const quizContainer = document.getElementById("quiz-container");
-  
-  if(currentQuestion >= questions.length) {
-    showResult();
-    return;
-  }
-
-  const q = questions[currentQuestion];
-  updateProgressBar();
-
-  // Limpa conteúdo anterior com animação simples
-  quizContainer.innerHTML = '';
-  
-  const questionEl = document.createElement("div");
-  questionEl.className = "question-text";
-  questionEl.innerText = q.text;
-  
-  const optionsDiv = document.createElement("div");
-  optionsDiv.className = "options-grid";
-
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt.text;
-    btn.className = opt.color;
-    btn.onclick = () => {
-      // Adiciona pontos
-      for(let course in opt.points) {
-        if(scores[course] !== undefined) {
-          scores[course] += opt.points[course];
-        }
-      }
-      currentQuestion++;
-      showQuestion();
-    };
-    optionsDiv.appendChild(btn);
-  });
-
-  quizContainer.appendChild(questionEl);
-  quizContainer.appendChild(optionsDiv);
-}
-
-function showResult() {
-  document.getElementById("quiz-container").classList.add("hidden");
-  document.getElementById("result-container").classList.remove("hidden");
-  document.getElementById("progressBar").style.width = "100%";
-
-  // Ordenar scores
-  const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
-  
-  // Pegar no TOP 3
-  const top3 = sorted.slice(0, 3);
-  const resultsDiv = document.getElementById("results-list");
-  resultsDiv.innerHTML = "";
-
-  top3.forEach((item, index) => {
-    const key = item[0];
-    const points = item[1];
-    const isWinner = index === 0;
-    
-    // Evitar mostrar cursos com 0 pontos se houver (opcional)
-    if (points === 0 && !isWinner) return;
-
-    const div = document.createElement("div");
-    div.className = `result-item ${isWinner ? 'winner' : ''}`;
-    
-    div.innerHTML = `
-      <div class="course-name">
-        ${index + 1}º - ${courseNames[key]}
-        <span style="font-size:0.9em; opacity:0.7">${points} pts</span>
-      </div>
-      <div class="course-desc">${descriptions[key]}</div>
-    `;
-    resultsDiv.appendChild(div);
-  });
-}
-
-function restartQuiz() {
-  currentQuestion = 0;
-  initScores();
-  document.getElementById("result-container").classList.add("hidden");
-  document.getElementById("quiz-container").classList.remove("hidden");
-  showQuestion();
-}
-
-// Iniciar
-initScores();
-showQuestion();
-
-</script>
-
-</body>
-</html>
+<h1>Qual
