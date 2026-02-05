@@ -30,7 +30,6 @@
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    animation: fadeIn 0.5s ease-in;
   }
 
   h1 {
@@ -66,6 +65,7 @@
     font-size: 1.3rem;
     color: #333;
     margin-bottom: 20px;
+    min-height: 40px; /* Garante espaço mesmo se vazio */
   }
 
   .options {
@@ -132,11 +132,6 @@
   }
 
   .hidden { display: none; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
 </style>
 </head>
 <body>
@@ -151,7 +146,7 @@
 
   <div id="quiz-area">
     <div class="question">
-      <h2 id="question-text">Carregando...</h2>
+      <h2 id="question-text"></h2>
       <div id="options-container" class="options"></div>
     </div>
   </div>
@@ -164,9 +159,7 @@
 </div>
 
 <script>
-  // --- CONFIGURAÇÃO E DADOS ---
-  
-  // Lista exata de Cursos (Chaves) e Nomes Legíveis (Valores)
+  // --- DADOS ---
   const courses = {
     Audiologia: "Audiologia",
     BiotecnologiaMedicinal: "Biotecnologia Medicinal",
@@ -183,6 +176,213 @@
     TerapiaOcupacional: "Terapia Ocupacional"
   };
 
-  // Descrições
   const descriptions = {
-    Audiologia: "Diagnóstico
+    Audiologia: "Diagnóstico e reabilitação da audição e equilíbrio com tecnologia avançada.",
+    BiotecnologiaMedicinal: "Investigação, genética e desenvolvimento de novas terapias em laboratório.",
+    CienciasBiomedicas: "Análises clínicas (sangue/tecidos) para diagnóstico de doenças.",
+    Farmacia: "Do fabrico industrial ao aconselhamento do medicamento na farmácia.",
+    FisiologiaClinica: "Exames de diagnóstico ao coração, pulmões e cérebro em hospital.",
+    Fisioterapia: "Reabilitação física, movimento e recuperação de lesões.",
+    ImagemMedicaRadioterapia: "Raio-X, TAC, Ressonância e tratamento oncológico (radioterapia).",
+    Ortopica: "Especialista na visão binocular, estrabismos e reabilitação visual.",
+    Osteopatia: "Terapia manual focada na estrutura do corpo e causa da dor.",
+    SaudeAmbiental: "Saúde pública, controlo de águas, ar e segurança alimentar.",
+    SaudeDigital: "Informática aplicada à saúde, gestão de dados e telemedicina.",
+    TerapiaFala: "Tratamento da fala, linguagem, voz e deglutição.",
+    TerapiaOcupacional: "Promoção da autonomia nas atividades do dia-a-dia."
+  };
+
+  const questions = [
+    {
+      text: "1. Onde te imaginas a trabalhar?",
+      options: [
+        { text: "Laboratório de investigação ou análises", points: { BiotecnologiaMedicinal: 3, CienciasBiomedicas: 3, Farmacia: 2 } },
+        { text: "Hospital, com tecnologia e máquinas", points: { ImagemMedicaRadioterapia: 3, FisiologiaClinica: 3, Audiologia: 2 } },
+        { text: "Ginásio ou gabinete de reabilitação", points: { Fisioterapia: 3, Osteopatia: 3, TerapiaOcupacional: 2 } },
+        { text: "Escritório, empresa ou consultoria", points: { SaudeDigital: 3, SaudeAmbiental: 2 } }
+      ]
+    },
+    {
+      text: "2. Que disciplinas preferes?",
+      options: [
+        { text: "Biologia e Química", points: { Farmacia: 3, BiotecnologiaMedicinal: 3, CienciasBiomedicas: 3 } },
+        { text: "Física e Matemática", points: { ImagemMedicaRadioterapia: 3, FisiologiaClinica: 2, SaudeDigital: 2 } },
+        { text: "Anatomia e Educação Física", points: { Fisioterapia: 3, Osteopatia: 3, TerapiaOcupacional: 1 } },
+        { text: "Português ou Psicologia", points: { TerapiaFala: 3, TerapiaOcupacional: 2, Ortopica: 1 } }
+      ]
+    },
+    {
+      text: "3. O que preferes fazer?",
+      options: [
+        { text: "Descobrir o que o paciente tem (Diagnóstico)", points: { CienciasBiomedicas: 2, FisiologiaClinica: 3, ImagemMedicaRadioterapia: 2 } },
+        { text: "Tratar e recuperar (Reabilitação)", points: { Fisioterapia: 3, TerapiaFala: 3, Osteopatia: 3, TerapiaOcupacional: 3 } },
+        { text: "Criar medicamentos ou vacinas", points: { Farmacia: 3, BiotecnologiaMedicinal: 3 } },
+        { text: "Prevenir riscos na comunidade", points: { SaudeAmbiental: 3 } }
+      ]
+    },
+    {
+      text: "4. Como lidas com computadores?",
+      options: [
+        { text: "Adoro, quero programar ou gerir dados", points: { SaudeDigital: 3 } },
+        { text: "Gosto, se for para controlar máquinas médicas", points: { ImagemMedicaRadioterapia: 2, FisiologiaClinica: 2 } },
+        { text: "Uso o básico, prefiro contacto humano", points: { Fisioterapia: 1, TerapiaOcupacional: 1, Osteopatia: 1 } },
+        { text: "Gosto para análise de dados científicos", points: { BiotecnologiaMedicinal: 1, CienciasBiomedicas: 1 } }
+      ]
+    },
+    {
+      text: "5. Tens interesse por algum sentido específico?",
+      options: [
+        { text: "Visão (Olhos)", points: { Ortopica: 3 } },
+        { text: "Audição (Ouvidos)", points: { Audiologia: 3, TerapiaFala: 1 } },
+        { text: "Tato e Movimento", points: { Fisioterapia: 2, Osteopatia: 2 } },
+        { text: "Não tenho preferência", points: { Farmacia: 1, CienciasBiomedicas: 1, SaudeAmbiental: 1 } }
+      ]
+    },
+    {
+      text: "6. Qual destes problemas resolverias?",
+      options: [
+        { text: "Uma criança que gagueja ou troca letras", points: { TerapiaFala: 3 } },
+        { text: "Um idoso que precisa de reaprender a vestir-se", points: { TerapiaOcupacional: 3 } },
+        { text: "Um atleta com rutura muscular", points: { Fisioterapia: 3, Osteopatia: 2 } },
+        { text: "Detetar uma bactéria numa amostra de sangue", points: { CienciasBiomedicas: 3, BiotecnologiaMedicinal: 2 } }
+      ]
+    },
+    {
+      text: "7. Preferes resultados imediatos ou longos?",
+      options: [
+        { text: "Imediatos (Fazer o exame e dar o resultado)", points: { ImagemMedicaRadioterapia: 3, FisiologiaClinica: 3 } },
+        { text: "Longo Prazo (Acompanhar a terapia meses a fio)", points: { Fisioterapia: 2, TerapiaFala: 2, TerapiaOcupacional: 2 } },
+        { text: "Muito longo prazo (Investigação científica)", points: { BiotecnologiaMedicinal: 3, Farmacia: 1 } },
+        { text: "Depende do projeto", points: { SaudeDigital: 1, SaudeAmbiental: 1 } }
+      ]
+    },
+    {
+      text: "8. Gostarias de trabalhar na Indústria Farmacêutica?",
+      options: [
+        { text: "Sim, muito", points: { Farmacia: 3, BiotecnologiaMedicinal: 3 } },
+        { text: "Talvez, na gestão de qualidade", points: { SaudeAmbiental: 2, CienciasBiomedicas: 1 } },
+        { text: "Não, prefiro lidar com doentes", points: { Fisioterapia: 1, FisiologiaClinica: 1, TerapiaFala: 1 } }
+      ]
+    },
+    {
+      text: "9. És detalhista?",
+      options: [
+        { text: "Sim, muito rigoroso com medições", points: { Ortopica: 2, Audiologia: 2, FisiologiaClinica: 2 } },
+        { text: "Sim, com higiene e segurança", points: { SaudeAmbiental: 3, CienciasBiomedicas: 2 } },
+        { text: "Mais focado na empatia e conversa", points: { TerapiaOcupacional: 2, TerapiaFala: 2 } },
+        { text: "Gosto de detalhes em números/códigos", points: { SaudeDigital: 3 } }
+      ]
+    },
+    {
+      text: "10. Qual é a tua missão?",
+      options: [
+        { text: "Proteger o ambiente para proteger a saúde", points: { SaudeAmbiental: 3 } },
+        { text: "Curar através da ciência molecular", points: { BiotecnologiaMedicinal: 3, Farmacia: 2 } },
+        { text: "Dar funcionalidade e movimento ao corpo", points: { Fisioterapia: 2, Osteopatia: 2, TerapiaOcupacional: 2 } },
+        { text: "Usar tecnologia para ver o invisível", points: { ImagemMedicaRadioterapia: 2, FisiologiaClinica: 2 } }
+      ]
+    }
+  ];
+
+  // --- LÓGICA ---
+
+  let currentScores = {};
+  let questionIndex = 0;
+
+  function resetScores() {
+    for (let key in courses) {
+      currentScores[key] = 0;
+    }
+  }
+
+  function renderQuestion() {
+    // Atualiza barra de progresso
+    const progressPercent = (questionIndex / questions.length) * 100;
+    document.getElementById("progress").style.width = progressPercent + "%";
+
+    // Verifica se acabou
+    if (questionIndex >= questions.length) {
+      showResults();
+      return;
+    }
+
+    const q = questions[questionIndex];
+    document.getElementById("question-text").innerText = q.text;
+    
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = ""; // Limpar anteriores
+
+    q.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerText = opt.text;
+      
+      btn.onclick = function() {
+        // Adicionar pontos
+        for (let courseKey in opt.points) {
+          if (currentScores.hasOwnProperty(courseKey)) {
+            currentScores[courseKey] += opt.points[courseKey];
+          }
+        }
+        // Próxima pergunta
+        questionIndex++;
+        renderQuestion();
+      };
+      
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function showResults() {
+    document.getElementById("quiz-area").classList.add("hidden");
+    document.getElementById("result-area").classList.remove("hidden");
+    document.getElementById("progress").style.width = "100%";
+
+    // Converter objeto em array e ordenar
+    let sortedCourses = Object.keys(currentScores).map(key => {
+      return { key: key, points: currentScores[key] };
+    });
+
+    // Ordenar do maior para o menor
+    sortedCourses.sort((a, b) => b.points - a.points);
+
+    // Pegar o Top 3
+    const top3 = sortedCourses.slice(0, 3);
+    const resultsList = document.getElementById("results-list");
+    resultsList.innerHTML = "";
+
+    top3.forEach((item, index) => {
+      // Se a pontuação for 0 e não for o primeiro lugar, ignorar
+      if (item.points === 0 && index > 0) return;
+
+      const div = document.createElement("div");
+      div.className = "result-card";
+      
+      const realName = courses[item.key];
+      const desc = descriptions[item.key];
+
+      div.innerHTML = `
+        <div class="course-name">${index + 1}º ${realName} <small>(${item.points} pts)</small></div>
+        <div class="course-desc">${desc}</div>
+      `;
+      resultsList.appendChild(div);
+    });
+  }
+
+  function restartQuiz() {
+    questionIndex = 0;
+    resetScores();
+    document.getElementById("result-area").classList.add("hidden");
+    document.getElementById("quiz-area").classList.remove("hidden");
+    renderQuestion();
+  }
+
+  // --- INICIALIZAÇÃO IMEDIATA ---
+  // Não espera pelo carregamento da página (onload), executa logo.
+  resetScores();
+  renderQuestion();
+
+</script>
+
+</body>
+</html>
