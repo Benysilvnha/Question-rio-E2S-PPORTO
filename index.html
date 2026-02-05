@@ -3,192 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Descobre o Teu Futuro - ESS P.PORTO</title>
+<title>Quiz Vocacional ESS P.PORTO</title>
 <style>
   :root {
-    --primary-color: #004080; /* Azul Porto */
-    --accent-color: #e4002b;  /* Vermelho P.Porto (Opcional, ou manter azul claro #1E90FF) */
-    --accent-light: #1E90FF;
-    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --primary: #004080;
+    --accent: #1E90FF;
+    --bg: #f4f7f6;
   }
 
   body {
-    font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
-    background: var(--bg-gradient);
-    max-width: 800px;
-    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    margin: 0;
     padding: 20px;
-    color: #444;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     min-height: 100vh;
   }
 
-  h1 {
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    font-weight: 700;
+  /* Contentores */
+  .container {
+    background: white;
+    max-width: 700px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    animation: fadeIn 0.5s ease-in;
   }
 
-  .subtitle {
+  h1 {
+    color: var(--primary);
+    text-align: center;
+    margin-top: 0;
+  }
+
+  p.subtitle {
     text-align: center;
     color: #666;
-    margin-bottom: 30px;
-    font-size: 1.1rem;
-  }
-
-  /* Logos */
-  .logo-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 20px;
-  }
-  .logo-container img {
-    height: 60px; /* Ajuste conforme necessário */
-    width: auto;
+    margin-bottom: 25px;
   }
 
   /* Barra de Progresso */
-  .progress-wrapper {
-    background-color: #e0e0e0;
-    border-radius: 20px;
-    height: 12px;
-    width: 100%;
-    margin-bottom: 30px;
+  .progress-bar-bg {
+    background: #e0e0e0;
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 25px;
     overflow: hidden;
   }
 
-  .progress-bar {
-    background-color: var(--accent-light);
+  .progress-bar-fill {
+    background: var(--accent);
     height: 100%;
     width: 0%;
-    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border-radius: 20px;
+    transition: width 0.3s ease;
   }
 
-  /* Cartão */
-  .card {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    animation: slideUp 0.5s ease;
+  /* Perguntas e Botões */
+  .question h2 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 20px;
   }
 
-  .question-text {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 30px;
-    color: var(--primary-color);
-    line-height: 1.4;
-  }
-
-  /* Botões */
-  .options-grid {
+  .options {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
   }
 
-  button {
-    padding: 18px 25px;
-    font-size: 1.05rem;
-    border: 2px solid transparent;
-    border-radius: 12px;
+  button.option-btn {
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
     text-align: left;
-    background-color: #f8f9fa;
-    color: #333;
-    border-color: #e9ecef;
+    transition: all 0.2s;
+    color: #444;
   }
 
-  button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border-color: var(--accent-light);
-    background-color: white;
-    color: var(--accent-light);
-  }
-
-  button:active {
-    transform: scale(0.98);
-  }
-
-  /* Resultados */
-  .result-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .result-item {
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: transform 0.2s;
-    border-left: 6px solid #ccc;
-  }
-
-  .result-item:hover {
+  button.option-btn:hover {
+    border-color: var(--accent);
+    background: #f0f8ff;
     transform: translateX(5px);
   }
 
-  .result-item.winner {
-    border-left-color: #28a745;
-    background-color: #f0fff4;
-    border-color: #c3e6cb;
+  /* Resultados */
+  .result-card {
+    background: #f9fff9;
+    border: 1px solid #d4edda;
+    border-left: 5px solid #28a745;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
   }
 
-  .result-item.runner-up {
-    border-left-color: var(--accent-light);
-  }
-
-  .course-title {
-    font-size: 1.2rem;
+  .course-name {
     font-weight: bold;
-    color: var(--primary-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: var(--primary);
+    font-size: 1.1rem;
   }
 
-  .match-badge {
-    font-size: 0.8rem;
-    background: #eee;
-    padding: 4px 8px;
-    border-radius: 12px;
+  .course-desc {
+    font-size: 0.9rem;
     color: #555;
+    margin-top: 5px;
   }
 
-  .btn-reset {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    margin-top: 25px;
+  .btn-restart {
+    display: block;
     width: 100%;
-    justify-content: center;
-  }
-  
-  .btn-reset:hover {
-    background-color: #003366;
+    padding: 15px;
+    background: var(--primary);
     color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
   }
 
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  .btn-restart:hover {
+    background: #003366;
   }
 
   .hidden { display: none; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
 
-<div class="logo-container">
-  <img src="https://www.ess.ipp.pt/logo-ess.png" alt="ESS P.PORTO" onerror="this.style.display='none'"> 
+<div class="container">
+  <h1>Orientação Vocacional</h1>
+  <p class="subtitle">Descobre o curso da ESS P.PORTO ideal para ti.</p>
+
+  <div class="progress-bar-bg">
+    <div id="progress" class="progress-bar-fill"></div>
+  </div>
+
+  <div id="quiz-area">
+    <div class="question">
+      <h2 id="question-text">Carregando...</h2>
+      <div id="options-container" class="options"></div>
+    </div>
+  </div>
+
+  <div id="result-area" class="hidden">
+    <h2 style="text-align: center; color: var(--primary);">Os teus resultados:</h2>
+    <div id="results-list"></div>
+    <button class="btn-restart" onclick="restartQuiz()">Começar de Novo</button>
+  </div>
 </div>
 
-<h1>Qual
+<script>
+  // --- CONFIGURAÇÃO E DADOS ---
+  
+  // Lista exata de Cursos (Chaves) e Nomes Legíveis (Valores)
+  const courses = {
+    Audiologia: "Audiologia",
+    BiotecnologiaMedicinal: "Biotecnologia Medicinal",
+    CienciasBiomedicas: "Ciências Biomédicas Laboratoriais",
+    Farmacia: "Farmácia",
+    FisiologiaClinica: "Fisiologia Clínica",
+    Fisioterapia: "Fisioterapia",
+    ImagemMedicaRadioterapia: "Imagem Médica e Radioterapia",
+    Ortopica: "Ortóptica",
+    Osteopatia: "Osteopatia",
+    SaudeAmbiental: "Saúde Ambiental",
+    SaudeDigital: "Saúde Digital",
+    TerapiaFala: "Terapia da Fala",
+    TerapiaOcupacional: "Terapia Ocupacional"
+  };
+
+  // Descrições
+  const descriptions = {
+    Audiologia: "Diagnóstico
